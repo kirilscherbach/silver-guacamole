@@ -4,6 +4,8 @@ from random import choice
 from argparse import ArgumentParser, FileType
 from configparser import ConfigParser
 from confluent_kafka import Producer
+import time
+import json 
 
 if __name__ == '__main__':
     # Parse the command line.
@@ -31,16 +33,17 @@ if __name__ == '__main__':
                 topic=msg.topic(), key=msg.key().decode('utf-8'), value=msg.value().decode('utf-8')))
 
     # Produce data by selecting random values from these lists.
-    topic = "purchases"
+    topic = "purchases_json"
     user_ids = ['eabara', 'jsmith', 'sgarcia', 'jbernard', 'htanaka', 'awalther']
     products = ['book', 'alarm clock', 't-shirts', 'gift card', 'batteries']
 
     count = 0
     for _ in range(10):
-
         user_id = choice(user_ids)
         product = choice(products)
-        producer.produce(topic, product, user_id, callback=delivery_callback)
+        timestamp = int(time.time())  # Get the system timestamp
+        message = {"user": user_id, "product": product, "time": timestamp}
+        producer.produce(topic, json.dumps(message), user_id,  callback=delivery_callback)
         count += 1
 
     # Block until the messages are sent.
