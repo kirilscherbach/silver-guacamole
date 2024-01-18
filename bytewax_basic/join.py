@@ -7,13 +7,14 @@ from bytewax.testing import TestingSource
 flow = Dataflow("join")
 
 src_1 = [
-    {"user_id": "123", "name": "Rumble"},
+    {"user_id": "456", "name": "Rumble"},
     {"user_id": "123", "name": "Bumble"},
+    {"user_id": "123", "name": "Dumble"},
 ]
 inp1 = op.input("inp1", flow, TestingSource(src_1))
 keyed_inp_1 = op.key_on("key_stream_1", inp1, lambda x: x["user_id"])
 
-op.inspect("debug", keyed_inp_1)
+#op.inspect("debug", keyed_inp_1)
 
 src_2 = [
     {"user_id": "123", "email": "bee@bytewax.com"},
